@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Quick Start - Leaflet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.1/dist/L.Control.Locate.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <style type="text/css">
+        #map { width: 600px; height: 400px; }
+    </style>
+    <script src="http://localhost/118140165_UTSSIG/leaflet-search-master/src/leaflet-search.js"></script>
+</head>
+<body>
+    <div id="map"></div>
+</body>
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+   <script src="leaflet-search-master/src/leaflet-search.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.1/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+   <script type="text/javascript">
+       var mymap = L.map('map').setView([-5.398120, 105.235675], 20);
+
+       L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'
+}).addTo(mymap);
+
+L.marker([-5.398120, 105.235675]).addTo(mymap)
+		.bindPopup("<b>Ayu's Home</b>").openPopup();
+var popup = L.popup();
+
+var lokasi_array = [
+    ["<b>Warung</b>", -5.398315, 105.235184],
+    ["<b>Konter</b>", -5.3987833,105.2350534]
+];
+
+for(var i=0; i<lokasi_array.length;i++){
+    marker = new L.marker([lokasi_array[i][1], lokasi_array[i][2]])
+    .bindPopup(lokasi_array[i][0])
+    .addTo(mymap);
+}
+
+var geojsonFeature = [
+{"loc":[105.250776567000059, -5.424948495999956], "title":"Rumah Sakit Bumiwaras"},
+{"loc":[105.252392072000077, -5.436485058999949], "title":"Rumah Sakit Umum Daerah Dr A Dadi Tjokrodipo Bandarlampung"},
+{"loc":[105.267497505000051, -5.413538183999947], "title":"Rumah Sakit Graha Husada Tanjungagungraya"},	
+{"loc":[105.258926633000044, -5.402926110999942], "title":"Rumah Sakit Umum Daerah Abdul Moeloek Lampung"},
+{"loc":[105.26212713700005, -5.392093601999932], "title":"Rumah Sakit Advent Bandarlampung"},
+{"loc":[105.276595205000035, -5.391089970999928], "title":"Rumah Sakit Urip Sumoharjo"},
+{"loc":[105.287550755000041, -5.386027953999928], "title":"Rumah Sakit Imanuel Bandarlampung"},
+];
+L.geoJSON(geojsonFeature).addTo(mymap);
+L.control.locate().addTo(mymap);
+var markersLayer = new L.LayerGroup();	//layer contain searched elements
+	
+mymap.addLayer(markersLayer);
+
+var controlSearch = new L.Control.Search({
+    position:'topright',		
+    layer: markersLayer,
+    initial: false,
+    zoom: 12,
+    marker: false
+});
+
+map.addControl( controlSearch );
+    for(i in geojsonFeature) {
+	    var title = geojsonFeature[i].title,	//value searched
+			loc = geojsonFeature[i].loc,		//position found
+			marker = new L.Marker(new L.latLng(loc), {title: title} ).addTo(mymap);//se property searched
+		marker.bindPopup('title: '+ title );
+		markersLayer.addLayer(marker);
+	}
+   </script>
+</html>
